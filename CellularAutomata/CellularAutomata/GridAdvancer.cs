@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using CellularAutomata.Grids;
+using CellularAutomata.Grids.Cells;
 
 namespace CellularAutomata
 {
     public class GridAdvancer
     {
+        private Grid _previousGrid;
         public Grid Grid { get; set; }
         public List<ICellFunction> CellFunctions { get; } = new List<ICellFunction>
         {
@@ -15,21 +16,29 @@ namespace CellularAutomata
         public GridAdvancer(Grid grid)
         {
             Grid = grid;
+            _previousGrid = grid.Copy();
         }
 
+        /// <summary>
+        /// Key point in this method is to reuse "previous" grid memory in order to speed up the process.
+        /// </summary>
         public void Advance()
         {
-            var grid = Grid.Copy();
-            foreach (var positionedCell in grid.GetAllCells())
+            var cells = Grid.GetAllCells();
+            foreach (var cell in cells)
             {
-                var interactableCells = grid.GetCellNeighbors(positionedCell).ToList();
+                var processedCell = cell;
                 foreach (var cellFunction in CellFunctions)
                 {
-                    var nextCell = cellFunction.Calculate(positionedCell, interactableCells);
-                    grid.SetCellUnsafe(nextCell, positionedCell.Position);
+                    processedCell = cellFunction.Calculate(processedCell);
+                    var cellToUpdate = _previousGrid.GetCellUnsafe(processedCell.Position.x, processedCell.Position.y, processedCell.Position.z);
+                    cellToUpdate.Data = processedCell.Data;
                 }
             }
-            Grid = grid;
+            //swap _prev with current
+            var temp = Grid;
+            Grid = _previousGrid;
+            _previousGrid = temp;
         }
     }
 }

@@ -2,7 +2,7 @@
 {
     public struct CellData
     {
-        public int Value;
+        public int Magnitude;
         public (int x, int y, int z) Direction;
     }
 }

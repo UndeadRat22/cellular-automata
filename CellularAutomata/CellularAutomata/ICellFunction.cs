@@ -1,28 +1,31 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using CellularAutomata.Extensions;
+using CellularAutomata.Grids.Cells;
 
 namespace CellularAutomata
 {
     public interface ICellFunction
     {
-        Cell Calculate(in PositionedCell previous, IEnumerable<PositionedCell> interactableCells);
+        Cell Calculate(in Cell previous);
     }
 
     public class ConstantCellFunction : ICellFunction
     {
-        public Cell Calculate(in PositionedCell previous, IEnumerable<PositionedCell> interactableCells) => previous.Cell;
+        public Cell Calculate(in Cell previous) => previous;
     }
 
     public class AveragingCellFunction : ICellFunction
     {
-        public Cell Calculate(in PositionedCell previous, IEnumerable<PositionedCell> interactableCells)
+        public Cell Calculate(in Cell previous)
         {
-            var average = interactableCells.Average(n => n.Cell.Value).Floor();
+            var average = previous.Neighbors.Average(n => n.Data.Magnitude).Floor();
             var cell = new Cell
             {
-                Value = average
+                Data = new CellData
+                {
+                    Direction = previous.Data.Direction,//TODO
+                    Magnitude = average
+                }
             };
             return cell;
         }

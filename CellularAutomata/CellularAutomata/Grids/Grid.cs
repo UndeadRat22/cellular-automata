@@ -56,9 +56,9 @@ namespace CellularAutomata.Grids
             return Cells[x, y, z];
         }
 
-        public void SetCellUnsafe(in Cell cell, in (int x, int y, int z) position)
+        public void SetCellUnsafe(in Cell cell)
         {
-            Cells[position.x, position.y, position.z] = cell;
+            Cells[cell.Position.x, cell.Position.y, cell.Position.z] = cell;
         }
 
         public Grid Copy()
@@ -67,7 +67,7 @@ namespace CellularAutomata.Grids
             foreach (Cell cell in Cells)
             {
                 var cellCopy = cell.Copy();
-                copy.SetCellUnsafe(cellCopy, cellCopy.Position);
+                copy.SetCellUnsafe(cellCopy);
             }
             copy.AssignNeighbors();
             return copy;
@@ -84,18 +84,5 @@ namespace CellularAutomata.Grids
         }
     }
 
-    public class HorizontalLayer
-    {
-        public HorizontalLayer(int x, int z)
-        {
-            Cells = new Cell[x, z];
-        }
-        public Cell[,] Cells { get; set; }
 
-        public Cell this[int x, int z]
-        {
-            get => Cells[x, z];
-            set => Cells[x, z] = value;
-        }
-    }
 }

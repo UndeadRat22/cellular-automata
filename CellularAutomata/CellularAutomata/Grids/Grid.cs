@@ -1,7 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using CellularAutomata.Extensions;
+using CellularAutomata.Grids.Cells;
+using CellularAutomata.Iterators;
 
-namespace CellularAutomata
+namespace CellularAutomata.Grids
 {
     public class Grid
     {
@@ -16,47 +19,35 @@ namespace CellularAutomata
         public Cell this[in int x, in int y, in int z] => Cells
             [y.Wrap(Size.y), x.Wrap(Size.x), z.Wrap(Size.z)];
 
-        public IEnumerable<PositionedCell> GetCellNeighbors(PositionedCell cell)
+
+
+        public IEnumerable<Cell> GetCellNeighbors((int x, int y, int z) cell)
         {
-            var (x, y, z) = cell.Position;
+            var (x, y, z) = cell;
             foreach (var xOffset in Enumerable.Range(-1, 3))
             {
+                var nX = x + xOffset;
                 foreach (var yOffset in Enumerable.Range(-1, 3))
                 {
+                    var nY = y + yOffset;
                     foreach (var zOffset in Enumerable.Range(-1, 3))
                     {
                         //maybe self should be averaged too idk;
                         if (xOffset == 0 && yOffset == 0 && zOffset == 0)
                             continue;
 
-                        int nX = x + xOffset;
-                        int nY = y + yOffset;
-                        int nZ = z + zOffset;
-                        yield return new PositionedCell
-                        {
-                            Cell = this[nX, nY, nZ],
-                            Position = (nX, nY, nZ)
-                        };
+                        var nZ = z + zOffset;
+                        yield return GetCellUnsafe(nX, nY, nZ);
                     }
                 }
             }
         }
 
-        public IEnumerable<PositionedCell> GetAllCells()
+        public IEnumerable<Cell> GetAllCells()
         {
-            foreach (var x in Enumerable.Range(0, Size.x))
+            foreach (var (x, y, z) in IterationProvider.Iterate((0, 0, 0), (Size.x, Size.y, Size.z)))
             {
-                foreach (var y in Enumerable.Range(0, Size.y))
-                {
-                    foreach (var z in Enumerable.Range(0, Size.z))
-                    {
-                        yield return new PositionedCell
-                        {
-                            Cell = GetCellUnsafe(x, y, z),
-                            Position = (x, y, z)
-                        };
-                    }
-                }
+                yield return GetCellUnsafe(x, y, z);
             }
         }
 
@@ -73,8 +64,23 @@ namespace CellularAutomata
         public Grid Copy()
         {
             var copy = new Grid(Size);
-
+            foreach (Cell cell in Cells)
+            {
+                var cellCopy = cell.Copy();
+                copy.SetCellUnsafe(cellCopy, cellCopy.Position);
+            }
+            copy.AssignNeighbors();
             return copy;
+        }
+
+        private void AssignNeighbors()
+        {
+            foreach (var(x, y, z) in IterationProvider.Iterate((0, 0, 0), (Size.x, Size.y, Size.z)))
+            {
+                var cell = GetCellUnsafe(x, y, z);
+                var interactableCells = GetCellNeighbors(cell.Position);
+                cell.Neighbors = interactableCells.ToArray();
+            }
         }
     }
 

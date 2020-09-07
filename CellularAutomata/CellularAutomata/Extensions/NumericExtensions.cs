@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CellularAutomata
+namespace CellularAutomata.Extensions
 {
     public static class NumericExtensions
     {

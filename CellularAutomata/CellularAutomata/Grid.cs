@@ -16,7 +16,7 @@ namespace CellularAutomata
         public Cell this[in int x, in int y, in int z] => Cells
             [y.Wrap(Size.y), x.Wrap(Size.x), z.Wrap(Size.z)];
 
-        public IEnumerable<Cell> GetCellNeighbors(PositionedCell cell)
+        public IEnumerable<PositionedCell> GetCellNeighbors(PositionedCell cell)
         {
             var (x, y, z) = cell.Position;
             foreach (var xOffset in Enumerable.Range(-1, 3))
@@ -29,7 +29,14 @@ namespace CellularAutomata
                         if (xOffset == 0 && yOffset == 0 && zOffset == 0)
                             continue;
 
-                        yield return this[x + xOffset, y + yOffset, z + zOffset];
+                        int nX = x + xOffset;
+                        int nY = y + yOffset;
+                        int nZ = z + zOffset;
+                        yield return new PositionedCell
+                        {
+                            Cell = this[nX, nY, nZ],
+                            Position = (nX, nY, nZ)
+                        };
                     }
                 }
             }

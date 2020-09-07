@@ -1,0 +1,6 @@
+C:\Projects\dev_day\cellular-automata\CellularAutomata\CellularAutomata\bin\Debug\CellularAutomata.dll
+C:\Projects\dev_day\cellular-automata\CellularAutomata\CellularAutomata\bin\Debug\CellularAutomata.pdb
+C:\Projects\dev_day\cellular-automata\CellularAutomata\CellularAutomata\obj\Debug\CellularAutomata.csprojAssemblyReference.cache
+C:\Projects\dev_day\cellular-automata\CellularAutomata\CellularAutomata\obj\Debug\CellularAutomata.csproj.CoreCompileInputs.cache
+C:\Projects\dev_day\cellular-automata\CellularAutomata\CellularAutomata\obj\Debug\CellularAutomata.dll
+C:\Projects\dev_day\cellular-automata\CellularAutomata\CellularAutomata\obj\Debug\CellularAutomata.pdb

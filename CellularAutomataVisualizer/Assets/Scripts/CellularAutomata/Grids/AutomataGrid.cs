@@ -3,13 +3,14 @@ using System.Linq;
 using CellularAutomata.Extensions;
 using CellularAutomata.Grids.Cells;
 using CellularAutomata.Iterators;
+using UnityEngine;
 
 namespace CellularAutomata.Grids
 {
-    public class Grid
+    public class AutomataGrid
     {
         public (int x, int y, int z) Size { get; }
-        public Grid(in (int x, int y, int z) size)
+        public AutomataGrid(in (int x, int y, int z) size)
         {
             Size = size;
             Cells = new Cell[size.x, size.y, size.z];
@@ -37,7 +38,7 @@ namespace CellularAutomata.Grids
                             continue;
 
                         var nZ = z + zOffset;
-                        yield return GetCellUnsafe(nX, nY, nZ);
+                        yield return this[nX, nY, nZ];
                     }
                 }
             }
@@ -56,28 +57,32 @@ namespace CellularAutomata.Grids
             return Cells[x, y, z];
         }
 
-        public void SetCellUnsafe(in Cell cell)
+        public void SetCellUnsafe(Cell cell)
         {
             Cells[cell.Position.x, cell.Position.y, cell.Position.z] = cell;
         }
 
-        public Grid Copy()
+        public AutomataGrid Copy()
         {
-            var copy = new Grid(Size);
+            var copy = new AutomataGrid(Size);
             foreach (Cell cell in Cells)
             {
                 var cellCopy = cell.Copy();
                 copy.SetCellUnsafe(cellCopy);
             }
+            Debug.Log("This fails");
             copy.AssignNeighbors();
+            Debug.Log("Nope");
             return copy;
         }
 
-        private void AssignNeighbors()
+        public void AssignNeighbors()
         {
             foreach (var(x, y, z) in IterationProvider.Iterate((0, 0, 0), (Size.x, Size.y, Size.z)))
             {
+                Debug.Log("hello ");
                 var cell = GetCellUnsafe(x, y, z);
+                Debug.Log(cell.Position);
                 var interactableCells = GetCellNeighbors(cell.Position);
                 cell.Neighbors = interactableCells.ToArray();
             }

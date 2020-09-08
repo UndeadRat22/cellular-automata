@@ -1,22 +1,24 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using CellularAutomata.Grids;
 using CellularAutomata.Grids.Cells;
+using UnityEngine;
 
 namespace CellularAutomata
 {
     public class GridAdvancer
     {
-        private Grid _previousGrid;
-        public Grid Grid { get; set; }
+        private AutomataGrid _previousAutomataGrid;
+        public AutomataGrid AutomataGrid { get; set; }
         public List<ICellFunction> CellFunctions { get; } = new List<ICellFunction>
         {
             new AveragingCellFunction()
         };
 
-        public GridAdvancer(Grid grid)
+        public GridAdvancer(AutomataGrid automataGrid)
         {
-            Grid = grid;
-            _previousGrid = grid.Copy();
+            AutomataGrid = automataGrid;
+            _previousAutomataGrid = automataGrid.Copy();
         }
 
         /// <summary>
@@ -24,21 +26,25 @@ namespace CellularAutomata
         /// </summary>
         public void Advance()
         {
-            var cells = Grid.GetAllCells();
+            Debug.Log(2);
+            var cells = AutomataGrid.GetAllCells();
             foreach (var cell in cells)
             {
+                Debug.Log(1);
                 var processedCell = cell;
                 foreach (var cellFunction in CellFunctions)
                 {
+                    Debug.Log(3);
                     processedCell = cellFunction.Calculate(processedCell);
-                    var cellToUpdate = _previousGrid.GetCellUnsafe(processedCell.Position.x, processedCell.Position.y, processedCell.Position.z);
+                    Debug.Log(4);
+                    var cellToUpdate = _previousAutomataGrid.GetCellUnsafe(processedCell.Position.x, processedCell.Position.y, processedCell.Position.z);
                     cellToUpdate.Data = processedCell.Data;
                 }
             }
             //swap _prev with current
-            var temp = Grid;
-            Grid = _previousGrid;
-            _previousGrid = temp;
+            var temp = AutomataGrid;
+            AutomataGrid = _previousAutomataGrid;
+            _previousAutomataGrid = temp;
         }
     }
 }

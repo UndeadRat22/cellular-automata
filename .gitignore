@@ -59,6 +59,6 @@ sysinfo.txt
 crashlytics-build.properties
 
 
-CellularAutomataVisualizer/Library/
+CellularAutomaton/Library/
 
-CellularAutomataVisualizer/Temp/
+CellularAutomaton/Temp/

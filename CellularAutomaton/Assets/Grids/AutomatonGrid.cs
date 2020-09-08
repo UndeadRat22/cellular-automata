@@ -47,7 +47,7 @@ namespace Assets.Grids
 
         public void AssignNeighboringCells(Cell cell, GridSettings.SurroundSelectionType selectionTypeType)
         {
-            cell.Neighbors = cell.Position
+            cell.Region = cell.Position
                 .GetSurroundingVectors(selectionTypeType)
                 .Select(GetCellSafe)
                 .ToArray();
@@ -58,7 +58,7 @@ namespace Assets.Grids
             foreach (var cell in from.Cells)
             {
                 var targetCell = GetCellUnsafe(cell.Position);
-                targetCell.Magnitude = cell.Neighbors.Average(n => n.Magnitude);
+                targetCell.Magnitude = cell.Region.Average(n => n.Magnitude);
             }
         }
 
@@ -72,9 +72,9 @@ namespace Assets.Grids
             }
         }
 
-        public double GetMinMagnitude()
+        public (double min, double max) GetEdgeMagnitudes()
         {
-            return GetAllCells().Min(cell => cell.Magnitude);
+            return GetAllCells().GetMinAndMaxValues(cell => cell.Magnitude);
         }
 
         private IEnumerable<Cell> GetAllCells()

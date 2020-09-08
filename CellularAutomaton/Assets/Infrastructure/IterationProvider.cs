@@ -10,7 +10,7 @@ namespace Assets.Infrastructure
         {
             MooreVectors = (new Vector3Int(-1, -1, -1))
                 .IterateToInclusive(new Vector3Int(1, 1, 1))
-                .Where(v => v != Vector3Int.zero)
+                .Distinct()
                 .ToArray();
 
             VonNeumannVectors =
@@ -22,7 +22,7 @@ namespace Assets.Infrastructure
                 .Concat(
                     (new Vector3Int(0, 0, -1))
                     .IterateToInclusive(new Vector3Int(0, 0, 1)))
-                .Where(v => v != Vector3Int.zero)
+                .Distinct()
                 .ToArray();
         }
         public static Vector3Int[] MooreVectors { get; }

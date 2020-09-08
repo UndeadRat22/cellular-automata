@@ -76,15 +76,15 @@ public class Automaton : MonoBehaviour
 
     private void UpdateGameObjectGrid()
     {
-        var minMagnitude = _grid.GetMinMagnitude();
+        var (min, max) = _grid.GetEdgeMagnitudes();
         foreach (var gridCell in _grid.Cells)
         {
             var gridObject = _gridObjects[gridCell.Position.x, gridCell.Position.y, gridCell.Position.z];
             //TODO: better padding (this just "shows" or "hides" the object based on how close it's to the min magnitude)
             //now its the "coldest" 10% ar inactive regions
-            gridObject.SetActive(gridCell.Magnitude - (MaxScale * 0.1) > minMagnitude);
+            gridObject.SetActive(gridCell.Magnitude - (MaxScale * 0.1) > min);
 
-            gridObject.GetComponent<Renderer>().material.color = Color.LerpUnclamped(MinColor, MaxColor, (float)(gridCell.Magnitude / MaxScale));
+            gridObject.GetComponent<Renderer>().material.color = Color.LerpUnclamped(MinColor, MaxColor, (float)(gridCell.Magnitude / max));
             //gridObject.transform.localScale = Vector3.one * (float)gridCell.Magnitude / MaxScale;
         }
     }

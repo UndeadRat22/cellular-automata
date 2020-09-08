@@ -9,13 +9,13 @@ namespace Assets.Grids.Cells
         public double Magnitude;
         public Vector3 Direction;
 
-        public Cell[] Neighbors;
+        public Cell[] Region;
 
         public static Cell Default(Vector3Int position) => new Cell
         {
             Direction = Vector3.zero,
             Magnitude = GridSettings.MinMagnitude,
-            Neighbors = null,
+            Region = null,
             Position = position
         };
     }
